@@ -85,76 +85,138 @@ class LoginPage extends StatelessWidget {
                       child: Center(
                         child: Padding(
                           padding: AppInsets.loginContent,
-                          child: ClipRRect(
-                            borderRadius:
-                                BorderRadius.circular(AppRadii.lg),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: colorScheme.surface.withValues(
-                                  alpha: 0.25,
-                                ),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(
+                                maxWidth: AppSizes.authCardMaxWidth,
+                              ),
+                              child: ClipRRect(
                                 borderRadius:
                                     BorderRadius.circular(AppRadii.lg),
-                                border: Border.all(
-                                  color: colorScheme.onSurface.withValues(
-                                    alpha: 0.12,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: colorScheme.surface.withValues(
+                                      alpha: 0.25,
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.circular(AppRadii.lg),
+                                    border: Border.all(
+                                      color: colorScheme.onSurface.withValues(
+                                        alpha: 0.12,
+                                      ),
+                                      width: 1.2,
+                                    ),
                                   ),
-                                  width: 1.2,
-                                ),
-                              ),
-                              child: BackdropFilter(
-                                filter: ImageFilter.blur(
-                                  sigmaX: 28,
-                                  sigmaY: 28,
-                                ),
-                                child: Padding(
-                                  padding: AppInsets.card,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        StringConstants.welcome,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headlineMedium
-                                            ?.copyWith(
-                                              color: colorScheme.onSurface,
+                                  child: BackdropFilter(
+                                    filter: ImageFilter.blur(
+                                      sigmaX: 28,
+                                      sigmaY: 28,
+                                    ),
+                                    child: Padding(
+                                      padding: AppInsets.card,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          // Top logo/avatar
+                                          Container(
+                                            width: AppSizes.authLogoSize,
+                                            height: AppSizes.authLogoSize,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: colorScheme.primary
+                                                  .withValues(alpha: 0.2),
+                                              border: Border.all(
+                                                color: colorScheme.primary
+                                                    .withValues(alpha: 0.5),
+                                                width: 1.5,
+                                              ),
                                             ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      const SizedBox(height: AppSpacing.sm),
-                                      Text(
-                                        StringConstants
-                                            .signInWithGoogleToContinue,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge
-                                            ?.copyWith(
-                                              color: colorScheme
-                                                  .onSurfaceVariant,
+                                            child: Icon(
+                                              Icons.flutter_dash,
+                                              color: colorScheme.onPrimary,
+                                              size: AppSizes.iconLg * 1.4,
                                             ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      const SizedBox(height: AppSpacing.xxxl),
-                                      FilledButton.icon(
-                                        onPressed: isLoading
-                                            ? null
-                                            : () => context
-                                                    .read<AuthBloc>()
-                                                .add(
+                                          ),
+                                          const SizedBox(height: AppSpacing.xl),
+                                          Text(
+                                            StringConstants.welcome,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineMedium
+                                                ?.copyWith(
+                                                  color: colorScheme.onSurface,
+                                                ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          const SizedBox(height: AppSpacing.sm),
+                                          Text(
+                                            StringConstants
+                                                .signInWithGoogleToContinue,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyLarge
+                                                ?.copyWith(
+                                                  color: colorScheme
+                                                      .onSurfaceVariant,
+                                                ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          const SizedBox(
+                                            height: AppSpacing.xxxl,
+                                          ),
+                                          FilledButton.icon(
+                                            onPressed: isLoading
+                                                ? null
+                                                : () => context
+                                                        .read<AuthBloc>()
+                                                    .add(
                                               const AuthSignInWithGoogleRequested(),
                                             ),
-                                        style: FilledButton.styleFrom(
-                                          padding: AppInsets.primaryButton,
-                                        ),
-                                        icon: const Icon(Icons.login),
-                                        label: const Text(
-                                          StringConstants.signInWithGoogle,
-                                        ),
+                                            style: FilledButton.styleFrom(
+                                              padding: AppInsets.primaryButton,
+                                              backgroundColor: colorScheme
+                                                  .surface
+                                                  .withValues(alpha: 0.1),
+                                              foregroundColor:
+                                                  colorScheme.onSurface,
+                                              elevation: 0,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        AppRadii.md),
+                                                side: BorderSide(
+                                                  color: colorScheme.onSurface
+                                                      .withValues(alpha: 0.3),
+                                                  width: 1,
+                                                ),
+                                              ),
+                                            ),
+                                            icon: const Icon(Icons.login),
+                                            label: const Text(
+                                              StringConstants.signInWithGoogle,
+                                            ),
+                                          ),
+                                          const SizedBox(height: AppSpacing.lg),
+                                          // Bottom handle similar to iOS indicator
+                                          Container(
+                                            width: AppSizes.authLogoSize,
+                                            height:
+                                                AppSizes.paginationIndicatorHeight,
+                                            decoration: BoxDecoration(
+                                              color: colorScheme.onSurface
+                                                  .withValues(alpha: 0.3),
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                AppRadii.sm,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
+                                    ),
                                   ),
                                 ),
                               ),

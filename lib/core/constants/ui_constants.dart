@@ -72,6 +72,12 @@ class AppSizes {
   static const double iconLg = 24;
   static const double iconSm = 20;
 
+  /// Large logo/avatar on auth screens.
+  static const double authLogoSize = 72;
+
+  /// Max width for centered auth card.
+  static const double authCardMaxWidth = 420;
+
   static const double bannerMinButtonHeight = 32;
 
   static const double postBadgeText = 12;

@@ -2,5 +2,5 @@
 class AppConstants {
   AppConstants._();
 
-  static const String appName = 'Flutter Login Google';
+  static const String appName = 'AVIFIBRE';
 }
