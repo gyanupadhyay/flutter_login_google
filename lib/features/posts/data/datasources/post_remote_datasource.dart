@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:flutter/foundation.dart';
 
 import 'package:flutter_login_google/core/constants/api_constants.dart';
 import 'package:flutter_login_google/core/error/failure.dart';
@@ -35,10 +36,21 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
           '_limit': '$limit',
         }).toString(),
       );
+      if (kDebugMode) {
+        debugPrint('[PostRemoteDataSource] GET $uri');
+      }
       final response = await _client.get(uri, headers: _defaultHeaders);
+      if (kDebugMode) {
+        debugPrint(
+          '[PostRemoteDataSource] status=${response.statusCode} bytes=${response.bodyBytes.length}',
+        );
+      }
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonList = json.decode(response.body) as List;
+        if (kDebugMode) {
+          debugPrint('[PostRemoteDataSource] decoded items=${jsonList.length}');
+        }
         return jsonList
             .map((json) => PostModel.fromJson(json as Map<String, dynamic>))
             .toList();

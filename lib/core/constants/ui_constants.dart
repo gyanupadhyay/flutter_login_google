@@ -75,5 +75,11 @@ class AppSizes {
 
   static const double postBadgeText = 12;
   static const double errorText = 14;
+
+  /// When within this many pixels from bottom, trigger pagination.
+  static const double scrollLoadMoreThreshold = 200;
+
+  /// Height for bottom pagination indicator.
+  static const double paginationIndicatorHeight = 4;
 }
 

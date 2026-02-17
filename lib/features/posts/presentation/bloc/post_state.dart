@@ -37,6 +37,15 @@ final class PostLoaded extends PostState {
   List<Object?> get props => [posts, currentPage, hasMore];
 }
 
+/// Used when fetching the next page; keeps list visible and shows bottom loader.
+final class PostPaginating extends PostLoaded {
+  const PostPaginating({
+    required super.posts,
+    required super.currentPage,
+    required super.hasMore,
+  });
+}
+
 final class PostError extends PostState {
   const PostError(this.message);
 

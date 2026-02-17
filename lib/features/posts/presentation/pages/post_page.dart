@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:flutter_login_google/core/constants/string_constants.dart';
 import 'package:flutter_login_google/core/constants/ui_constants.dart';
@@ -37,16 +38,55 @@ class _PostPageState extends State<PostPage> {
   }
 
   void _onScroll() {
-    if (_isBottom) {
-      context.read<PostBloc>().add(const PostLoadMoreRequested());
-    }
-  }
+    if (!_scrollController.hasClients) return;
 
-  bool get _isBottom {
-    if (!_scrollController.hasClients) return false;
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.offset;
-    return currentScroll >= (maxScroll * 0.9);
+    final bloc = context.read<PostBloc>();
+    final state = bloc.state;
+    if (state is! PostLoaded) {
+      if (kDebugMode) {
+        debugPrint('[PostPage] onScroll ignored: state=${state.runtimeType}');
+      }
+      return;
+    }
+    if (state is PostPaginating) {
+      if (kDebugMode) {
+        debugPrint('[PostPage] onScroll ignored: already paginating');
+      }
+      return;
+    }
+    if (!state.hasMore) {
+      if (kDebugMode) {
+        debugPrint('[PostPage] onScroll ignored: hasMore=false');
+      }
+      return;
+    }
+
+    final position = _scrollController.position;
+    if (position.maxScrollExtent <= 0) {
+      if (kDebugMode) {
+        debugPrint(
+          '[PostPage] onScroll ignored: not scrollable (max=${position.maxScrollExtent})',
+        );
+      }
+      return;
+    }
+
+    final triggerAt =
+        position.maxScrollExtent - AppSizes.scrollLoadMoreThreshold;
+    if (kDebugMode) {
+      debugPrint(
+        '[PostPage] scroll px=${position.pixels.toStringAsFixed(1)} max=${position.maxScrollExtent.toStringAsFixed(1)} triggerAt=${triggerAt.toStringAsFixed(1)}',
+      );
+    }
+
+    if (position.pixels >= triggerAt) {
+      if (kDebugMode) {
+        debugPrint(
+          '[PostPage] dispatch PostLoadMoreRequested (page=${state.currentPage}, count=${state.posts.length})',
+        );
+      }
+      bloc.add(const PostLoadMoreRequested());
+    }
   }
 
   @override
@@ -75,29 +115,7 @@ class _PostPageState extends State<PostPage> {
       body: BlocBuilder<PostBloc, PostState>(
         builder: (context, state) {
           if (state is PostLoading) {
-            if (state.posts.isEmpty) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            // Show existing posts while loading more
-            return RefreshIndicator(
-              onRefresh: () async {
-                context.read<PostBloc>().add(const PostRefreshRequested());
-              },
-              child: ListView.builder(
-                controller: _scrollController,
-                padding: AppInsets.screen,
-                itemCount: state.posts.length + 1,
-                itemBuilder: (context, index) {
-                  if (index >= state.posts.length) {
-                    return const Padding(
-                      padding: AppInsets.screen,
-                      child: Center(child: CircularProgressIndicator()),
-                    );
-                  }
-                  return _PostItem(post: state.posts[index]);
-                },
-              ),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (state is PostError) {
@@ -140,6 +158,7 @@ class _PostPageState extends State<PostPage> {
 
           if (state is PostLoaded) {
             final posts = state.posts;
+            final isPaginating = state is PostPaginating;
             if (posts.isEmpty) {
               return const Center(child: Text('No posts available'));
             }
@@ -151,7 +170,7 @@ class _PostPageState extends State<PostPage> {
               child: ListView.builder(
                 controller: _scrollController,
                 padding: AppInsets.screen,
-                itemCount: posts.length + (state.hasMore ? 1 : 0),
+                itemCount: posts.length + (isPaginating ? 1 : 0),
                 itemBuilder: (context, index) {
                   if (index >= posts.length) {
                     return const Padding(
