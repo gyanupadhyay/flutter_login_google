@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -16,7 +18,10 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
+      extendBodyBehindAppBar: true,
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthAuthenticated) {
@@ -24,70 +29,152 @@ class LoginPage extends StatelessWidget {
           }
         },
         builder: (context, state) {
-          if (state is AuthLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+          final isLoading = state is AuthLoading;
 
-          return SafeArea(
-            child: Column(
-              children: [
-                // Error banner at the top (if error exists)
-                if (state is AuthError)
-                  Padding(
-                    padding: const EdgeInsets.only(top: AppSpacing.lg),
-                    child: ErrorBanner(
-                      message: state.message,
-                      errorType: mapAuthErrorTypeToErrorType(state.errorType),
-                      canRetry: state.canRetry,
-                      onRetry: state.canRetry
-                          ? () => context.read<AuthBloc>().add(
-                                const AuthSignInWithGoogleRequested(),
-                              )
-                          : null,
-                      onDismiss: () {
-                        // Dismiss error by emitting unauthenticated state
-                        context.read<AuthBloc>().add(
-                              const AuthCheckRequested(),
-                            );
-                      },
-                    ),
-                  ),
-                // Main content
-                Expanded(
-                  child: Center(
-                    child: Padding(
-                      padding: AppInsets.loginContent,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            StringConstants.welcome,
-                            style: Theme.of(context).textTheme.headlineMedium,
-                          ),
-                          const SizedBox(height: AppSpacing.sm),
-                          Text(
-                            StringConstants.signInWithGoogleToContinue,
-                            style: Theme.of(context).textTheme.bodyLarge,
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: AppSpacing.xxxl),
-                          FilledButton.icon(
-                            onPressed: () => context.read<AuthBloc>().add(
-                                  const AuthSignInWithGoogleRequested(),
-                                ),
-                            icon: const Icon(Icons.login),
-                            label: const Text(StringConstants.signInWithGoogle),
-                            style: FilledButton.styleFrom(
-                              padding: AppInsets.primaryButton,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              // Gradient background
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      colorScheme.primary.withValues(alpha: 0.6),
+                      colorScheme.secondary.withValues(alpha: 0.4),
+                      colorScheme.surfaceVariant.withValues(alpha: 0.3),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+              // Subtle blurred overlay to enhance glass effect
+              BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                child: Container(
+                  color: colorScheme.surface.withValues(alpha: 0.1),
+                ),
+              ),
+              SafeArea(
+                child: Column(
+                  children: [
+                    // Error banner at the top (if error exists)
+                    if (state is AuthError)
+                      Padding(
+                        padding: const EdgeInsets.only(top: AppSpacing.lg),
+                        child: ErrorBanner(
+                          message: state.message,
+                          errorType:
+                              mapAuthErrorTypeToErrorType(state.errorType),
+                          canRetry: state.canRetry,
+                          onRetry: state.canRetry
+                              ? () => context.read<AuthBloc>().add(
+                                    const AuthSignInWithGoogleRequested(),
+                                  )
+                              : null,
+                          onDismiss: () {
+                            // Dismiss error by emitting unauthenticated state
+                            context.read<AuthBloc>().add(
+                                  const AuthCheckRequested(),
+                                );
+                          },
+                        ),
+                      ),
+                    // Main glass card content
+                    Expanded(
+                      child: Center(
+                        child: Padding(
+                          padding: AppInsets.loginContent,
+                          child: ClipRRect(
+                            borderRadius:
+                                BorderRadius.circular(AppRadii.lg),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: colorScheme.surface.withValues(
+                                  alpha: 0.25,
+                                ),
+                                borderRadius:
+                                    BorderRadius.circular(AppRadii.lg),
+                                border: Border.all(
+                                  color: colorScheme.onSurface.withValues(
+                                    alpha: 0.12,
+                                  ),
+                                  width: 1.2,
+                                ),
+                              ),
+                              child: BackdropFilter(
+                                filter: ImageFilter.blur(
+                                  sigmaX: 28,
+                                  sigmaY: 28,
+                                ),
+                                child: Padding(
+                                  padding: AppInsets.card,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        StringConstants.welcome,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineMedium
+                                            ?.copyWith(
+                                              color: colorScheme.onSurface,
+                                            ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      const SizedBox(height: AppSpacing.sm),
+                                      Text(
+                                        StringConstants
+                                            .signInWithGoogleToContinue,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge
+                                            ?.copyWith(
+                                              color: colorScheme
+                                                  .onSurfaceVariant,
+                                            ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      const SizedBox(height: AppSpacing.xxxl),
+                                      FilledButton.icon(
+                                        onPressed: isLoading
+                                            ? null
+                                            : () => context
+                                                    .read<AuthBloc>()
+                                                .add(
+                                              const AuthSignInWithGoogleRequested(),
+                                            ),
+                                        style: FilledButton.styleFrom(
+                                          padding: AppInsets.primaryButton,
+                                        ),
+                                        icon: const Icon(Icons.login),
+                                        label: const Text(
+                                          StringConstants.signInWithGoogle,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Loading overlay
+              if (isLoading)
+                Container(
+                  color: colorScheme.surface.withValues(alpha: 0.2),
+                  child: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+            ],
           );
         },
       ),
