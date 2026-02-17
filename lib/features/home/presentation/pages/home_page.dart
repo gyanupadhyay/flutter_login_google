@@ -10,6 +10,7 @@ import 'package:flutter_login_google/core/widgets/error_banner.dart';
 import 'package:flutter_login_google/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter_login_google/features/auth/presentation/bloc/auth_event.dart';
 import 'package:flutter_login_google/features/auth/presentation/bloc/auth_state.dart';
+import 'package:flutter_login_google/features/auth/presentation/utils/auth_error_type_mapper.dart';
 import 'package:flutter_login_google/features/posts/presentation/bloc/post_bloc.dart';
 import 'package:flutter_login_google/features/posts/presentation/pages/post_page.dart';
 
@@ -51,7 +52,7 @@ class HomePage extends StatelessWidget {
                   padding: const EdgeInsets.only(top: AppSpacing.lg),
                   child: ErrorBanner(
                     message: state.message,
-                    errorType: _mapErrorType(state.errorType),
+                    errorType: mapAuthErrorTypeToErrorType(state.errorType),
                     canRetry: state.canRetry,
                     onRetry: state.canRetry
                         ? () => context.read<AuthBloc>().add(
@@ -80,19 +81,5 @@ class HomePage extends StatelessWidget {
         );
       },
     );
-  }
-
-  ErrorType? _mapErrorType(AuthErrorType? type) {
-    if (type == null) return null;
-    switch (type) {
-      case AuthErrorType.network:
-        return ErrorType.network;
-      case AuthErrorType.authentication:
-        return ErrorType.authentication;
-      case AuthErrorType.server:
-        return ErrorType.server;
-      case AuthErrorType.unknown:
-        return ErrorType.unknown;
-    }
   }
 }
