@@ -24,11 +24,7 @@ Future<void> initServiceLocator() async {
 
   // Secure storage
   sl.registerLazySingleton(
-    () => FlutterSecureStorage(
-      aOptions: const AndroidOptions(
-        encryptedSharedPreferences: true,
-      ),
-    ),
+    () => const FlutterSecureStorage(),
   );
   sl.registerLazySingleton(() => SecureStorageService(sl()));
   sl.registerLazySingleton<AuthLocalDataSource>(

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:glassmorphic_ui_kit/glassmorphic_ui_kit.dart';
 
 import 'package:flutter_login_google/core/constants/route_constants.dart';
 import 'package:flutter_login_google/core/constants/string_constants.dart';
@@ -91,132 +92,107 @@ class LoginPage extends StatelessWidget {
                               constraints: const BoxConstraints(
                                 maxWidth: AppSizes.authCardMaxWidth,
                               ),
-                              child: ClipRRect(
+                              child: GlassContainer(
+                                blur: 22,
                                 borderRadius:
                                     BorderRadius.circular(AppRadii.lg),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: colorScheme.surface.withValues(
-                                      alpha: 0.25,
-                                    ),
-                                    borderRadius:
-                                        BorderRadius.circular(AppRadii.lg),
-                                    border: Border.all(
-                                      color: colorScheme.onSurface.withValues(
-                                        alpha: 0.12,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    // Light, frosted white-ish glass using theme colors
+                                    colorScheme.onPrimary.withAlpha(90),
+                                    colorScheme.onPrimary.withAlpha(40),
+                                  ],
+                                ),
+                                child: Padding(
+                                  padding: AppInsets.card,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      // Top logo/avatar
+                                      Container(
+                                        width: AppSizes.authLogoSize,
+                                        height: AppSizes.authLogoSize,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: colorScheme.primary
+                                              .withValues(alpha: 0.2),
+                                          border: Border.all(
+                                            color: colorScheme.primary
+                                                .withValues(alpha: 0.5),
+                                            width: 1.5,
+                                          ),
+                                        ),
+                                        child: Icon(
+                                          Icons.flutter_dash,
+                                          color: colorScheme.onPrimary,
+                                          size: AppSizes.iconLg * 1.4,
+                                        ),
                                       ),
-                                      width: 1.2,
-                                    ),
-                                  ),
-                                  child: BackdropFilter(
-                                    filter: ImageFilter.blur(
-                                      sigmaX: 28,
-                                      sigmaY: 28,
-                                    ),
-                                    child: Padding(
-                                      padding: AppInsets.card,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          // Top logo/avatar
-                                          Container(
-                                            width: AppSizes.authLogoSize,
-                                            height: AppSizes.authLogoSize,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: colorScheme.primary
-                                                  .withValues(alpha: 0.2),
-                                              border: Border.all(
-                                                color: colorScheme.primary
-                                                    .withValues(alpha: 0.5),
-                                                width: 1.5,
-                                              ),
+                                      const SizedBox(height: AppSpacing.xl),
+                                      Text(
+                                        StringConstants.welcome,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineMedium
+                                            ?.copyWith(
+                                              color: colorScheme.onSurface,
                                             ),
-                                            child: Icon(
-                                              Icons.flutter_dash,
-                                              color: colorScheme.onPrimary,
-                                              size: AppSizes.iconLg * 1.4,
-                                            ),
-                                          ),
-                                          const SizedBox(height: AppSpacing.xl),
-                                          Text(
-                                            StringConstants.welcome,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headlineMedium
-                                                ?.copyWith(
-                                                  color: colorScheme.onSurface,
-                                                ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          const SizedBox(height: AppSpacing.sm),
-                                          Text(
-                                            StringConstants
-                                                .signInWithGoogleToContinue,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyLarge
-                                                ?.copyWith(
-                                                  color: colorScheme
-                                                      .onSurfaceVariant,
-                                                ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          const SizedBox(
-                                            height: AppSpacing.xxxl,
-                                          ),
-                                          FilledButton.icon(
-                                            onPressed: isLoading
-                                                ? null
-                                                : () => context
-                                                        .read<AuthBloc>()
-                                                    .add(
-                                              const AuthSignInWithGoogleRequested(),
-                                            ),
-                                            style: FilledButton.styleFrom(
-                                              padding: AppInsets.primaryButton,
-                                              backgroundColor: colorScheme
-                                                  .surface
-                                                  .withValues(alpha: 0.1),
-                                              foregroundColor:
-                                                  colorScheme.onSurface,
-                                              elevation: 0,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        AppRadii.md),
-                                                side: BorderSide(
-                                                  color: colorScheme.onSurface
-                                                      .withValues(alpha: 0.3),
-                                                  width: 1,
-                                                ),
-                                              ),
-                                            ),
-                                            icon: const Icon(Icons.login),
-                                            label: const Text(
-                                              StringConstants.signInWithGoogle,
-                                            ),
-                                          ),
-                                          const SizedBox(height: AppSpacing.lg),
-                                          // Bottom handle similar to iOS indicator
-                                          Container(
-                                            width: AppSizes.authLogoSize,
-                                            height:
-                                                AppSizes.paginationIndicatorHeight,
-                                            decoration: BoxDecoration(
-                                              color: colorScheme.onSurface
-                                                  .withValues(alpha: 0.3),
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                AppRadii.sm,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                        textAlign: TextAlign.center,
                                       ),
-                                    ),
+                                      const SizedBox(height: AppSpacing.sm),
+                                      Text(
+                                        StringConstants
+                                            .signInWithGoogleToContinue,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge
+                                            ?.copyWith(
+                                              color: colorScheme
+                                                  .onSurfaceVariant,
+                                            ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      const SizedBox(
+                                        height: AppSpacing.xxxl,
+                                      ),
+                                      FilledButton.icon(
+                                        onPressed: isLoading
+                                            ? null
+                                            : () => context
+                                                    .read<AuthBloc>()
+                                                .add(
+                                          const AuthSignInWithGoogleRequested(),
+                                        ),
+                                        style: FilledButton.styleFrom(
+                                          padding: AppInsets.primaryButton,
+                                          backgroundColor:
+                                              colorScheme.onPrimary.withAlpha(
+                                            40,
+                                          ),
+                                          foregroundColor:
+                                              colorScheme.onSurface,
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(
+                                                    AppRadii.md),
+                                            side: BorderSide(
+                                              color: colorScheme.onPrimary
+                                                  .withAlpha(120),
+                                              width: 1,
+                                            ),
+                                          ),
+                                        ),
+                                        icon: const Icon(Icons.login),
+                                        label: const Text(
+                                          StringConstants.signInWithGoogle,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
