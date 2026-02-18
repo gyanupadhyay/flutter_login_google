@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:flutter_login_google/core/constants/app_colors.dart';
 import 'package:flutter_login_google/core/constants/app_typography.dart';
+import 'package:flutter_login_google/core/constants/ui_constants.dart';
 
 class AuthOptionButton extends StatelessWidget {
   const AuthOptionButton({
@@ -28,7 +29,7 @@ class AuthOptionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final radius = BorderRadius.circular(32);
+    final radius = BorderRadius.circular(AppRadii.xl);
 
     final BoxDecoration decoration;
     if (isNeumorphic) {
