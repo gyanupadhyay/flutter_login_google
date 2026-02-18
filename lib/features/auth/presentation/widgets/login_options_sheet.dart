@@ -114,12 +114,24 @@ class _LoginOptionsSheetState extends State<LoginOptionsSheet>
                         strokeAlign: BorderSide.strokeAlignInside,
                       ),
                     ),
-                    boxShadow: [
+                    boxShadow: const [
+                      // Soft top highlight to mimic extruded surface.
                       BoxShadow(
-                        color: AppColors.sheetShadow.withValues(alpha: 0.16),
-                        offset: const Offset(0, 10),
+                        color: AppColors.neumorphicHighlight,
+                        offset: Offset(0, -3),
+                        blurRadius: 4,
+                      ),
+                      // Soft bottom shade.
+                      BoxShadow(
+                        color: AppColors.neumorphicShade,
+                        offset: Offset(0, 2),
+                        blurRadius: 4,
+                      ),
+                      // Main drop shadow for depth.
+                      BoxShadow(
+                        color: AppColors.neumorphicShadow,
+                        offset: Offset(0, 10),
                         blurRadius: 20,
-                        spreadRadius: 0,
                       ),
                     ],
                   ),
