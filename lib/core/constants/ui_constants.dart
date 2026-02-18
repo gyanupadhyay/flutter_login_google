@@ -28,6 +28,12 @@ class AppRadii {
   static const double sm = 8;
   static const double md = 12;
   static const double lg = 20;
+
+  /// Large pill/button radius for auth/login surfaces.
+  static const double xl = 30;
+
+  /// Extra large radius used for the login bottom sheet.
+  static const double xxl = 30;
 }
 
 /// Common paddings/margins (built from the spacing scale).
