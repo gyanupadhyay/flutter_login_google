@@ -144,7 +144,7 @@ class _LoginPageState extends State<LoginPage> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 24),
                           child: Align(
-                            alignment: const Alignment(0, 0.12),
+                            alignment: const Alignment(0, 0.07),
                             child: ConstrainedBox(
                               constraints: const BoxConstraints(maxWidth: 420),
                               child: Column(

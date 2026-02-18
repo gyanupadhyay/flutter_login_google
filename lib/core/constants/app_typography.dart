@@ -31,7 +31,7 @@ class AppTypography {
     ],
     fontSize: 14,
     fontWeight: FontWeight.w500,
-    height: 1.15,
+    height: 1.45,
     letterSpacing: 0,
     color: AppColors.loginSubtitle,
   );
