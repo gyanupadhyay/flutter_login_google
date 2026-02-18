@@ -8,6 +8,18 @@ class StringConstants {
       'Sign in with Google to continue';
   static const String signInWithGoogle = 'Sign in with Google';
 
+  static const String loginHeroTitle = 'Money,\nforever yours';
+  static const String loginHeroSubtitle =
+      'Spend, Save and Invest your money\nwithout giving up control';
+  static const String loginCtaContinue = 'Continue';
+
+  static const String loginContinueWithEmail = 'Continue with email';
+  static const String loginContinueWithApple = 'Continue with Apple';
+  static const String loginContinueWithGoogle = 'Continue with Google';
+
+  static const String loginTermsPrefix = 'By continuing, you agree to our ';
+  static const String loginTermsEmphasis = 'Terms';
+
   // Home Page
   static const String home = 'Home';
   static const String user = 'User';
